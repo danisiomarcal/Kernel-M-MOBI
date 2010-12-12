@@ -77,14 +77,11 @@ public class ConceptManager implements Serializable {
 	}
 
 	private void addConcept(GenericRelation genericRelation) {
-<<<<<<< HEAD
 		
 //		if (!this.allGenericRelations.containsKey(genericRelation.getUri())) {
 //			this.allGenericRelations.put(genericRelation.getUri(), genericRelation);
 //		}
 		
-=======
->>>>>>> 38ac978b4bb777d0f6cf156d68166bdd2e6a6231
 		String directNameRelation = this
 				.getDirectNameOfRelation(genericRelation);
 
@@ -192,7 +189,6 @@ public class ConceptManager implements Serializable {
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((SymmetricRelation) r).getName() + "_"
 					+ r.getClassB().getUri();
-<<<<<<< HEAD
 		else if (r.getType() == Relation.UNIDIRECIONAL_COMPOSITION)
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((CompositionRelation) r).getNameA() + "_"
@@ -201,18 +197,12 @@ public class ConceptManager implements Serializable {
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((GenericRelation) r).getName() + "_"
 					+ r.getClassB().getUri();
-=======
-		else if (r.getType() == Relation.UNIDIRECIONAL_COMPOSITION
-				|| r.getType() == Relation.GENERIC_RELATION)
-			nameMobiRelation = r.getClassA().getUri() + "_"
-					+ ((CompositionRelation) r).getNameA() + "_"
-					+ r.getClassB().getUri();
->>>>>>> 38ac978b4bb777d0f6cf156d68166bdd2e6a6231
 		else if (r.getType() == Relation.BIDIRECIONAL_COMPOSITION)
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((CompositionRelation) r).getNameA() + "_"
 					+ r.getClassB().getUri();
 
+                //Retornando nome da relação
 		return nameMobiRelation;
 	}
 
