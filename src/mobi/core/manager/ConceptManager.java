@@ -73,6 +73,7 @@ public class ConceptManager implements Serializable {
 			this.addConcept((EquivalenceRelation) concept);
 			return;
 		}
+<<<<<<< HEAD
 	}
 
 	private void addConcept(GenericRelation genericRelation) {
@@ -88,6 +89,26 @@ public class ConceptManager implements Serializable {
 //			this.allGenericRelations.put(genericRelation.getUri(),
 //					genericRelation);
 //		}
+=======
+
+	}
+
+	private void addConcept(GenericRelation genericRelation) {
+		
+//		if (!this.allGenericRelations.containsKey(genericRelation.getUri())) {
+//			this.allGenericRelations.put(genericRelation.getUri(), genericRelation);
+//		}
+		
+		String directNameRelation = this
+				.getDirectNameOfRelation(genericRelation);
+
+		if (!this.allGenericRelations.containsKey(directNameRelation)) {
+			genericRelation.setName(directNameRelation);
+			genericRelation.setUri(directNameRelation);
+			this.allGenericRelations.put(genericRelation.getUri(),
+					genericRelation);
+		}
+>>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 	}
 
 	private void addConcept(Instance instance) {
@@ -190,11 +211,22 @@ public class ConceptManager implements Serializable {
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((CompositionRelation) r).getNameA() + "_"
 					+ r.getClassB().getUri();
+<<<<<<< HEAD
+=======
+                else if (r.getType() == Relation.GENERIC_RELATION)
+			nameMobiRelation = r.getClassA().getUri() + "_"
+					+ ((GenericRelation) r).getName() + "_"
+					+ r.getClassB().getUri();
+>>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 		else if (r.getType() == Relation.BIDIRECIONAL_COMPOSITION)
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((CompositionRelation) r).getNameA() + "_"
 					+ r.getClassB().getUri();
 
+<<<<<<< HEAD
+=======
+                //Retornando nome da relação
+>>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 		return nameMobiRelation;
 	}
 
@@ -612,10 +644,17 @@ public class ConceptManager implements Serializable {
 	/* Method for return the name object property from object property MOBI */
 	public String getPropertyName(String nameMobiObjectProperty, Class classA,
 			Class classB) {
+<<<<<<< HEAD
 //		 int quantity = nameMobiObjectProperty.length() -
 //		 (classA.getUri().length() + classB.getUri().length() + 2 );
 //		 return nameMobiObjectProperty.substring(classA.getUri().length() + 1,
 //		 classA.getUri().length() + 1 + quantity);
+=======
+		// int quantity = nameMobiObjectProperty.length() -
+		// (classA.getUri().length() + classB.getUri().length() + 2 );
+		// return nameMobiObjectProperty.substring(classA.getUri().length() + 1,
+		// classA.getUri().length() + 1 + quantity);
+>>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 		return nameMobiObjectProperty;
 	}
 
