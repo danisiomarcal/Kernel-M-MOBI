@@ -211,22 +211,11 @@ public class ConceptManager implements Serializable {
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((CompositionRelation) r).getNameA() + "_"
 					+ r.getClassB().getUri();
-<<<<<<< HEAD
-=======
-                else if (r.getType() == Relation.GENERIC_RELATION)
-			nameMobiRelation = r.getClassA().getUri() + "_"
-					+ ((GenericRelation) r).getName() + "_"
-					+ r.getClassB().getUri();
->>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 		else if (r.getType() == Relation.BIDIRECIONAL_COMPOSITION)
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((CompositionRelation) r).getNameA() + "_"
 					+ r.getClassB().getUri();
 
-<<<<<<< HEAD
-=======
-                //Retornando nome da relação
->>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 		return nameMobiRelation;
 	}
 
