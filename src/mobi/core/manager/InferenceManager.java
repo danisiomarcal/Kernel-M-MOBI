@@ -7,10 +7,6 @@ import java.util.Map;
 
 import mobi.core.common.Relation;
 import mobi.core.concept.Instance;
-<<<<<<< HEAD
-=======
-import mobi.core.relation.CompositionRelation;
->>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 import mobi.core.relation.InstanceRelation;
 
 public class InferenceManager implements Serializable {
@@ -21,7 +17,6 @@ public class InferenceManager implements Serializable {
 
 	public Collection<Integer> infereRelation(Relation relation) {
 		this.mountRelationPossibilitiesMap();
-
 		this.findRelationPossibilities(relation);
 		return this.relationPossibilitiesMap.values();
 	}
@@ -30,7 +25,6 @@ public class InferenceManager implements Serializable {
 	}
 
 	private void mountRelationPossibilitiesMap() {
-
 		this.relationPossibilitiesMap.put(Relation.BIDIRECIONAL_COMPOSITION,
 				Relation.BIDIRECIONAL_COMPOSITION);
 		this.relationPossibilitiesMap.put(Relation.EQUIVALENCE,
@@ -44,28 +38,13 @@ public class InferenceManager implements Serializable {
 	}
 
 	private void findRelationPossibilities(Relation relation) {
-		boolean inheritance = false;
-		inheritance = !relation.getClassA().getUri().equals(
-				relation.getClassB().getUri()) ? true : false;
-		inheritance = this.Inheritance(relation.getInstanceRelationMapA()
-				.values());
-
-		if (inheritance)
-			inheritance = this.Inheritance(relation.getInstanceRelationMapB()
-					.values());
-
-		boolean equivalence = false;
-		equivalence = !relation.getClassA().getUri().equals(
-				relation.getClassB().getUri()) ? true : false;
-		equivalence = this.Equivalence(relation);
-
-		if (!inheritance)
+		if (!this.InheritanceCanBe(relation))
 			this.relationPossibilitiesMap.remove(Relation.INHERITANCE);
-		if (!equivalence)
+		
+		if (!this.EquivalenceCanBe(relation))
 			this.relationPossibilitiesMap.remove(Relation.EQUIVALENCE);
 		
-		boolean compositionsymmetric = this.CompositionSymmetric(relation);
-		if (!compositionsymmetric)
+		if (!this.CompositionCanBe(relation))
 		{
 			this.relationPossibilitiesMap.remove(Relation.BIDIRECIONAL_COMPOSITION);
 			this.relationPossibilitiesMap.remove(Relation.UNIDIRECIONAL_COMPOSITION);
@@ -73,60 +52,127 @@ public class InferenceManager implements Serializable {
 		}
 	}
 
-	private boolean Inheritance(
-			Collection<InstanceRelation> instanceRelationCollection) {
-		for (InstanceRelation instanceRelation : instanceRelationCollection) {
-			if (instanceRelation.getAllInstances().size() == 1) {
-				for (Instance instance : instanceRelation.getAllInstances()
-						.values()) {
-					if (!instanceRelation.getInstance().getUri().equals(
-							instance.getUri())) {
-						return false;
-					}
-				}
-			} else if (instanceRelation.getAllInstances().size() != 0)
+	private boolean InheritanceCanBe(Relation relation)
+	{
+		if (relation.getClassA().getUri().equals(relation.getClassB().getUri()))
+			return false;
+		
+		for(InstanceRelation instanceRelation: relation.getInstanceRelationMapA().values())
+		{
+			int numberRelations = instanceRelation.getAllInstances().size();
+			if (numberRelations > 1)
 				return false;
-		}
-		return true;
-	}
-
-	private boolean Equivalence(Relation relation) {
-		if (relation.getInstanceRelationMapA().size() == relation
-				.getInstanceRelationMapB().size()) {
-			for (InstanceRelation instanceRelation : relation
-					.getInstanceRelationMapA().values()) {
-				if (instanceRelation.getAllInstances().size() != 1)
-					return false;
-				else {
-					String secondInstance = ((Instance) instanceRelation
-							.getAllInstances().entrySet().iterator().next().getValue())
-							.getUri();
-					if (!instanceRelation.getInstance().getUri().equals(
-							secondInstance))
+			else if (numberRelations == 1)
+			{
+				for(Instance instance: instanceRelation.getAllInstances().values())
+				{
+					if (!instance.getUri().equals(instanceRelation.getInstance().getUri()))
 						return false;
 				}
 			}
-			return true;
 		}
-		return false;
+		
+		return true;
 	}
-
-	private boolean CompositionSymmetric(Relation relation) {
-		for (InstanceRelation instanceRelation : relation
-				.getInstanceRelationMapA().values()) {
-			if (instanceRelation.getAllInstances().size() > 0) {
-				for (Instance instance : instanceRelation.getAllInstances()
-						.values()) {
-					if (instanceRelation.getInstance().getUri().equals(
-							instance.getUri()))
+	
+	private boolean EquivalenceCanBe(Relation relation)
+	{
+		if (relation.getClassA().getUri().equals(relation.getClassB().getUri()))
+			return false;
+		
+		for(InstanceRelation instanceRelation: relation.getInstanceRelationMapA().values())
+		{
+			int numberRelations = instanceRelation.getAllInstances().size();
+			if (numberRelations != 1)
+				return false;
+			else
+			{
+				for(Instance instance: instanceRelation.getAllInstances().values())
+				{
+					if (!instance.getUri().equals(instanceRelation.getInstance().getUri()))
 						return false;
 				}
-			} else
+			}
+		}
+		
+		return true;
+	}
+	
+	private boolean CompositionCanBe(Relation relation)
+	{
+		for(InstanceRelation instanceRelation: relation.getInstanceRelationMapA().values())
+		{
+			int numberRelations = instanceRelation.getAllInstances().size();
+			if (numberRelations >= 0)
+			{
+				for(Instance instance: instanceRelation.getAllInstances().values())
+				{
+					if (instance.getUri().equals(instanceRelation.getInstance().getUri()))
+					{
+						return false;
+					}
+				}
+			}else
 				return false;
 		}
+		
 		return true;
 	}
 }
+
+//	private boolean Inheritance(
+//			Collection<InstanceRelation> instanceRelationCollection) {
+//		for (InstanceRelation instanceRelation : instanceRelationCollection) {
+//			if (instanceRelation.getAllInstances().size() == 1) {
+//				for (Instance instance : instanceRelation.getAllInstances()
+//						.values()) {
+//					if (!instanceRelation.getInstance().getUri().equals(
+//							instance.getUri())) {
+//						return false;
+//					}
+//				}
+//			} else if (instanceRelation.getAllInstances().size() != 0)
+//				return false;
+//		}
+//		return true;
+//	}
+//
+//	private boolean Equivalence(Relation relation) {
+//		if (relation.getInstanceRelationMapA().size() == relation
+//				.getInstanceRelationMapB().size()) {
+//			for (InstanceRelation instanceRelation : relation
+//					.getInstanceRelationMapA().values()) {
+//				if (instanceRelation.getAllInstances().size() != 1)
+//					return false;
+//				else {
+//					String secondInstance = ((Instance) instanceRelation
+//							.getAllInstances().entrySet().iterator().next().getValue())
+//							.getUri();
+//					if (!instanceRelation.getInstance().getUri().equals(
+//							secondInstance))
+//						return false;
+//				}
+//			}
+//			return true;
+//		}
+//		return false;
+//	}
+
+//	private boolean CompositionSymmetric(Relation relation) {
+//		for (InstanceRelation instanceRelation : relation
+//				.getInstanceRelationMapA().values()) {
+//			if (instanceRelation.getAllInstances().size() > 0) {
+//				for (Instance instance : instanceRelation.getAllInstances()
+//						.values()) {
+//					if (instanceRelation.getInstance().getUri().equals(
+//							instance.getUri()))
+//						return false;
+//				}
+//			} else
+//				return false;
+//		}
+//		return true;
+//	}
 
 //private void findRelationPossibilities() {
 //

@@ -145,7 +145,6 @@ public abstract class Relation extends Concept {
 				
 			}
 			
-			//Existe mesmo esta necessidade ?
 			if (!instanceA.getUri().equals("")) {
 				instanceRelationB.addInstance(instanceA);
 			}	

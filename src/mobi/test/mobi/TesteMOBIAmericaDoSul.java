@@ -6,7 +6,6 @@ import mobi.core.Mobi;
 import mobi.core.common.Relation;
 import mobi.core.concept.Class;
 import mobi.core.concept.Instance;
-import mobi.core.relation.CompositionRelation;
 
 public class TesteMOBIAmericaDoSul {
 
@@ -79,59 +78,39 @@ public class TesteMOBIAmericaDoSul {
 			mobi.isOneOf(iSemiArido, cVegetacao);
 			mobi.isOneOf(iTropical,  cVegetacao);
 			
-			CompositionRelation rTemCapital = (CompositionRelation) mobi.createBidirecionalCompositionRelationship("Pais_chupa_Capital", "Capital_loucura_Pais");
+			Relation rTemCapital = mobi.createBidirecionalCompositionRelationship("tem", "pertence");
 			rTemCapital.setClassA(cPais);
 			rTemCapital.setClassB(cCapital);
-//			rTemCapital.setContext(contextAmericaDoSul);
 			rTemCapital.addInstanceRelation(iBrasil,    iBrasilia);
 			rTemCapital.addInstanceRelation(iChile,     iSantiago);
 			rTemCapital.addInstanceRelation(iArgentina, iBuenosAires);
-			
-			//Restriction restriction = new Restriction();
-			//restriction.setType(Restriction.ALL_VALUES);
-			//rTemCapital.setRestriction(restriction);
 			rTemCapital.processCardinality();
-			
 			mobi.addConcept(rTemCapital);
 			
-			String inverse = mobi.getInversePropertyName("temCapital");
-			if (inverse == null)
-				inverse = "desgraca";
-			
-			Relation rEstaContido = mobi.createBidirecionalCompositionRelationship("Regiao_chupa_Pais", "Pais_loucura_Regiao");
+			Relation rEstaContido = mobi.createBidirecionalCompositionRelationship("esta_contida", "tem");
 			rEstaContido.setClassA(cRegiao);
 			rEstaContido.setClassB(cPais);
-//			rEstaContido.setContext(contextAmericaDoSul);
 			rEstaContido.addInstanceRelation(iOeste, iChile);
 			rEstaContido.addInstanceRelation(iSul,   iArgentina);
 			rEstaContido.addInstanceRelation(iLeste, iBrasil);
 			rEstaContido.processCardinality();
-			
 			mobi.addConcept(rEstaContido);
 			
-			Relation rTemTipoVegetacao = mobi.createBidirecionalCompositionRelationship("Regiao_temTipoVegetacao_Vegetacao", "Vegetacao_esta_na_Regiao");
+			Relation rTemTipoVegetacao = mobi.createBidirecionalCompositionRelationship("tem", "esta_na");
 			rTemTipoVegetacao.setClassA(cRegiao);
 			rTemTipoVegetacao.setClassB(cVegetacao);
-//			rTemTipoVegetacao.setContext(contextAmericaDoSul);
 			rTemTipoVegetacao.addInstanceRelation(iOeste, iSavana);
 			rTemTipoVegetacao.addInstanceRelation(iOeste, iSemiArido);
 			rTemTipoVegetacao.addInstanceRelation(iSul,   iSavana);
 			rTemTipoVegetacao.addInstanceRelation(iLeste, iSemiArido);
 			rTemTipoVegetacao.addInstanceRelation(iLeste, iTropical);
 			rTemTipoVegetacao.processCardinality();
-			
-			//Adiciona todas as relações
-			
 			mobi.addConcept(rTemTipoVegetacao);
-			
-//			System.out.println(mobi.getAllInstances());
-//			System.out.println(mobi.getAllContexts());
-//			System.out.println(mobi.getAllClasses());
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+		
 		return mobi;
-
 	}
 }

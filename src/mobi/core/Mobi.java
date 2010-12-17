@@ -45,7 +45,7 @@ public class Mobi implements Serializable{
 	 * 
 	 */
 	
-	public void addConcept(Concept concept) {
+	public void addConcept(Concept concept) throws Exception {
 		if (concept.getUri() != null){
 			new ExceptionURI("Invalid URI name. Maybe it is null?");
 		}
@@ -406,7 +406,7 @@ public class Mobi implements Serializable{
 	 * RELATION CONVERTION METHODS
 	 * 
 	 */
-	public Relation convertToBidirecionalCompositionRelationship(Relation relation, String nameA, String nameB) {
+	public Relation convertToBidirecionalCompositionRelationship(Relation relation, String nameA, String nameB) throws Exception {
 		Relation newRelation = this.relationFactory.convertToBidirecionalCompositionRelationship(relation, nameA, nameB);
 		if (this.getCompositionRelation(relation.getUri()) != null) {
 			this.conceptManager.removeConcept(relation);
@@ -415,7 +415,7 @@ public class Mobi implements Serializable{
         return newRelation;
     }
 	
-	public Relation convertToBidirecionalCompositionHasBelongsToRelationship(Relation relation, String nameA, String nameB) {
+	public Relation convertToBidirecionalCompositionHasBelongsToRelationship(Relation relation, String nameA, String nameB) throws Exception {
 		Relation newRelation = this.relationFactory.convertToBidirecionalCompositionHasBelongsToRelationship(relation, nameA, nameB);
 		if (this.getCompositionRelation(relation.getUri()) != null) {
 			this.conceptManager.removeConcept(relation);
@@ -424,7 +424,7 @@ public class Mobi implements Serializable{
         return newRelation;
 	}
 	
-	public Relation convertToEquivalenceRelation(Relation relation, String name) {
+	public Relation convertToEquivalenceRelation(Relation relation, String name) throws Exception {
 		Relation newRelation = this.relationFactory.convertToEquivalenceRelation(relation, name);
 		if (this.getEquivalenceRelation(relation.getUri()) != null) {
 			this.conceptManager.removeConcept(relation);
@@ -433,7 +433,7 @@ public class Mobi implements Serializable{
         return newRelation;
 	}
 	
-	public Relation convertToInheritanceRelation(Relation relation, String name) {
+	public Relation convertToInheritanceRelation(Relation relation, String name) throws Exception {
 		Relation newRelation = this.relationFactory.convertToInheritanceRelation(relation, name);
 		if (this.getInheritanceRelation(relation.getUri()) != null) {
 			this.conceptManager.removeConcept(relation);
@@ -442,7 +442,7 @@ public class Mobi implements Serializable{
         return newRelation;
 	}
 	
-	public Relation convertToSymmetricRelation(Relation relation, String name) {
+	public Relation convertToSymmetricRelation(Relation relation, String name) throws Exception {
 		Relation newRelation = this.relationFactory.convertToSymmetricRelation(relation, name);
 		if (this.getSymmetricRelation(relation.getUri()) != null) {
 			this.conceptManager.removeConcept(relation);
@@ -451,7 +451,7 @@ public class Mobi implements Serializable{
         return newRelation;
 	}
 	
-	public Relation convertToUnidirecionalCompositionRelationship(Relation relation, String name) {
+	public Relation convertToUnidirecionalCompositionRelationship(Relation relation, String name) throws Exception {
 		Relation newRelation = this.relationFactory.convertToUnidirecionalCompositionRelationship(relation, name);
 		if (this.getCompositionRelation(relation.getUri()) != null) {
 			this.conceptManager.removeConcept(relation);

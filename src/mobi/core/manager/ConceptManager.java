@@ -14,8 +14,10 @@ import mobi.core.relation.CompositionRelation;
 import mobi.core.relation.EquivalenceRelation;
 import mobi.core.relation.GenericRelation;
 import mobi.core.relation.InheritanceRelation;
+import mobi.core.relation.InstanceRelation;
 import mobi.core.relation.SymmetricRelation;
 import mobi.exception.ExceptionURI;
+import mobi.exception.ExceptionEquivalenceInheritanceRelation;
 
 public class ConceptManager implements Serializable {
 
@@ -37,7 +39,7 @@ public class ConceptManager implements Serializable {
 	public ConceptManager() {
 	}
 
-	public void addConcept(Concept concept) {
+	public void addConcept(Concept concept) throws Exception {
 
 		if (concept.getClass().equals(Instance.class)) {
 			this.addConcept((Instance) concept);
@@ -73,42 +75,13 @@ public class ConceptManager implements Serializable {
 			this.addConcept((EquivalenceRelation) concept);
 			return;
 		}
-<<<<<<< HEAD
 	}
 
 	private void addConcept(GenericRelation genericRelation) {
 		if (!this.allGenericRelations.containsKey(genericRelation.getUri())) {
-			this.allGenericRelations.put(genericRelation.getUri(), genericRelation);
-		}
-//		String directNameRelation = this
-//				.getDirectNameOfRelation(genericRelation);
-//
-//		if (!this.allGenericRelations.containsKey(directNameRelation)) {
-//			genericRelation.setName(directNameRelation);
-//			genericRelation.setUri(directNameRelation);
-//			this.allGenericRelations.put(genericRelation.getUri(),
-//					genericRelation);
-//		}
-=======
-
-	}
-
-	private void addConcept(GenericRelation genericRelation) {
-		
-//		if (!this.allGenericRelations.containsKey(genericRelation.getUri())) {
-//			this.allGenericRelations.put(genericRelation.getUri(), genericRelation);
-//		}
-		
-		String directNameRelation = this
-				.getDirectNameOfRelation(genericRelation);
-
-		if (!this.allGenericRelations.containsKey(directNameRelation)) {
-			genericRelation.setName(directNameRelation);
-			genericRelation.setUri(directNameRelation);
 			this.allGenericRelations.put(genericRelation.getUri(),
 					genericRelation);
 		}
->>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 	}
 
 	private void addConcept(Instance instance) {
@@ -127,20 +100,22 @@ public class ConceptManager implements Serializable {
 		String directNameRelation = this
 				.getDirectNameOfRelation(compositionRelation);
 		String inverseNameRelation = this
-		.getInverseNameOfRelation(compositionRelation);
+				.getInverseNameOfRelation(compositionRelation);
 
-		if (!this.allCompositionRelations.containsKey(directNameRelation + inverseNameRelation)
-			&& !this.allCompositionRelations.containsKey(inverseNameRelation + directNameRelation)) {
+		if (!this.allCompositionRelations.containsKey(directNameRelation
+				+ inverseNameRelation)
+				&& !this.allCompositionRelations
+						.containsKey(inverseNameRelation + directNameRelation)) {
 			compositionRelation.setContext(this.context);
-			
-			if (compositionRelation.getType() == Relation.BIDIRECIONAL_COMPOSITION)
-			{
+
+			if (compositionRelation.getType() == Relation.BIDIRECIONAL_COMPOSITION) {
 				compositionRelation.setNameA(directNameRelation);
 				compositionRelation.setNameB(inverseNameRelation);
-			}else
+			} else
 				compositionRelation.setNameA(directNameRelation);
-			
-			compositionRelation.setUri(directNameRelation + inverseNameRelation);
+
+			compositionRelation
+					.setUri(directNameRelation + inverseNameRelation);
 			this.allCompositionRelations.put(compositionRelation.getUri(),
 					compositionRelation);
 		}
@@ -153,8 +128,7 @@ public class ConceptManager implements Serializable {
 				.getInverseNameOfRelation(symmetricRelation);
 
 		if (!this.allSymmetricRelations.containsKey(directNameRelation)
-				&& !this.allSymmetricRelations
-						.containsKey(inverseNameRelation)) {
+				&& !this.allSymmetricRelations.containsKey(inverseNameRelation)) {
 			symmetricRelation.setContext(this.context);
 			symmetricRelation.setName(directNameRelation);
 			symmetricRelation.setUri(directNameRelation);
@@ -163,7 +137,8 @@ public class ConceptManager implements Serializable {
 		}
 	}
 
-	private void addConcept(EquivalenceRelation equivalenceRelation) {
+	private void addConcept(EquivalenceRelation equivalenceRelation)
+			throws Exception {
 		String directNameRelation = this
 				.getDirectNameOfRelation(equivalenceRelation);
 		String inverseNameRelation = this
@@ -172,6 +147,8 @@ public class ConceptManager implements Serializable {
 		if (!this.allEquivalenceRelations.containsKey(directNameRelation)
 				&& !this.allEquivalenceRelations
 						.containsKey(inverseNameRelation)) {
+
+			this.ValidateRelationEquivalenceOrInheritance(equivalenceRelation);
 			equivalenceRelation.setContext(this.context);
 			equivalenceRelation.setUri(directNameRelation);
 			this.allEquivalenceRelations.put(equivalenceRelation.getUri(),
@@ -179,7 +156,8 @@ public class ConceptManager implements Serializable {
 		}
 	}
 
-	private void addConcept(InheritanceRelation inheritanceRelation) {
+	private void addConcept(InheritanceRelation inheritanceRelation)
+			throws Exception {
 
 		String directNameRelation = this
 				.getDirectNameOfRelation(inheritanceRelation);
@@ -189,11 +167,38 @@ public class ConceptManager implements Serializable {
 		if (!this.allInheritanceRelations.containsKey(directNameRelation)
 				&& !this.allInheritanceRelations
 						.containsKey(inverseNameRelation)) {
+
+			this.ValidateRelationEquivalenceOrInheritance(inheritanceRelation);
 			inheritanceRelation.setContext(this.context);
 			inheritanceRelation.setUri(directNameRelation);
 			this.allInheritanceRelations.put(inheritanceRelation.getUri(),
 					inheritanceRelation);
 		}
+	}
+
+	private void ValidateRelationEquivalenceOrInheritance(Relation relation)
+			throws Exception {
+		if (!relation.getClassA().getUri()
+				.equals(relation.getClassB().getUri())) {
+			for (InstanceRelation instanceRelation : relation
+					.getInstanceRelationMapA().values()) {
+				String instanceBase = instanceRelation.getInstance().getUri();
+				for (Instance instance : instanceRelation.getAllInstances()
+						.values()) {
+					if (!instance.getUri().equals(instanceBase))
+						throw new ExceptionEquivalenceInheritanceRelation(
+								"The instance "
+										+ instanceBase
+										+ " of class "
+										+ relation.getClassA().getUri()
+										+ " has relation with different instance "
+										+ instance.getUri() + " of class "
+										+ relation.getClassB().getUri() + ".");
+				}
+			}
+		} else
+			throw new ExceptionEquivalenceInheritanceRelation(
+					"For this type of relation, the classes must be different.");
 	}
 
 	private String getDirectNameOfRelation(Relation r) {
@@ -633,17 +638,10 @@ public class ConceptManager implements Serializable {
 	/* Method for return the name object property from object property MOBI */
 	public String getPropertyName(String nameMobiObjectProperty, Class classA,
 			Class classB) {
-<<<<<<< HEAD
 //		 int quantity = nameMobiObjectProperty.length() -
 //		 (classA.getUri().length() + classB.getUri().length() + 2 );
 //		 return nameMobiObjectProperty.substring(classA.getUri().length() + 1,
 //		 classA.getUri().length() + 1 + quantity);
-=======
-		// int quantity = nameMobiObjectProperty.length() -
-		// (classA.getUri().length() + classB.getUri().length() + 2 );
-		// return nameMobiObjectProperty.substring(classA.getUri().length() + 1,
-		// classA.getUri().length() + 1 + quantity);
->>>>>>> 0c23cd9e08c58948b226771063086415f12dd17b
 		return nameMobiObjectProperty;
 	}
 
@@ -714,5 +712,4 @@ public class ConceptManager implements Serializable {
 			HashMap<String, Set<Instance>> allClassInstanceRelation) {
 		this.allClassInstanceRelation = allClassInstanceRelation;
 	}
-
 }
