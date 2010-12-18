@@ -7,7 +7,6 @@ import mobi.core.Mobi;
 import mobi.core.common.Relation;
 import mobi.core.concept.Class;
 import mobi.core.concept.Instance;
-import mobi.core.manager.InferenceManager;
 import mobi.core.relation.GenericRelation;
 import mobi.core.relation.SymmetricRelation;
 
@@ -52,8 +51,7 @@ public class TesteMOBIGenericoSimetria {
 			genericRelation.processCardinality();
 			mobi.addConcept(genericRelation);
 			
-			InferenceManager inference = new InferenceManager();
-			Collection<Integer> possibilities = inference.infereRelation(genericRelation);
+			Collection<Integer> possibilities = mobi.infereRelation(genericRelation);
 			
 			if(possibilities.contains(Relation.SYMMETRIC_COMPOSITION)) //Preferred choice
 			{
