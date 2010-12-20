@@ -87,7 +87,7 @@ public class TesteMOBIAmericaDoSul {
 			rTemCapital.processCardinality();
 			mobi.addConcept(rTemCapital);
 			
-			Relation rEstaContido = mobi.createBidirecionalCompositionRelationship("esta_contida", "tem");
+			Relation rEstaContido = mobi.createBidirecionalCompositionRelationship("possui", "esta_contido");
 			rEstaContido.setClassA(cRegiao);
 			rEstaContido.setClassB(cPais);
 			rEstaContido.addInstanceRelation(iOeste, iChile);
@@ -96,7 +96,7 @@ public class TesteMOBIAmericaDoSul {
 			rEstaContido.processCardinality();
 			mobi.addConcept(rEstaContido);
 			
-			Relation rTemTipoVegetacao = mobi.createBidirecionalCompositionRelationship("tem", "esta_na");
+			Relation rTemTipoVegetacao = mobi.createBidirecionalCompositionRelationship("contem", "esta_na");
 			rTemTipoVegetacao.setClassA(cRegiao);
 			rTemTipoVegetacao.setClassB(cVegetacao);
 			rTemTipoVegetacao.addInstanceRelation(iOeste, iSavana);

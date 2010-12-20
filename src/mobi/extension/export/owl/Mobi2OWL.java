@@ -20,7 +20,14 @@ import mobi.core.relation.SymmetricRelation;
 import mobi.exception.ExceptionInverseRelation;
 import mobi.exception.ExceptionMobiFile;
 import mobi.exception.ExceptionSymmetricRelation;
+import mobi.test.mobi.TesteMOBIAmericaDoSul;
+import mobi.test.mobi.TesteMOBIEleicao;
+import mobi.test.mobi.TesteMOBIGenericoBidirecional;
+import mobi.test.mobi.TesteMOBIImportacaoAmericaDoSul;
+import mobi.test.mobi.TesteMOBIImportacaoPessoa;
+import mobi.test.mobi.TesteMOBIPessoa;
 import mobi.test.mobi.TesteMOBIProfessor;
+import mobi.test.mobi.TesteMOBIProfessorAluno;
 
 import com.hp.hpl.jena.ontology.AllValuesFromRestriction;
 import com.hp.hpl.jena.ontology.Individual;
@@ -483,18 +490,18 @@ public class Mobi2OWL {
 		return this.jena.createUnionClass(null, this.jena.createList(nodes));
 	}
 
-	private com.hp.hpl.jena.ontology.Restriction createJenaRestriction(
+	private void createJenaRestriction(
 			ObjectProperty property, OntClass domain, OntClass range, int type) {
 		if (type == Mobi2OWL.RESTRICTION_ALLVALUES) {
 			AllValuesFromRestriction rAllVallues = this.jena
 					.createAllValuesFromRestriction(null, property, range);
 			rAllVallues.addSubClass(domain);
-			return (com.hp.hpl.jena.ontology.Restriction) rAllVallues;
+			//return (com.hp.hpl.jena.ontology.Restriction) rAllVallues;
 		} else {
 			SomeValuesFromRestriction rSomeVallues = this.jena
 					.createSomeValuesFromRestriction(null, property, range);
 			rSomeVallues.addSubClass(domain);
-			return (com.hp.hpl.jena.ontology.Restriction) rSomeVallues;
+			//return (com.hp.hpl.jena.ontology.Restriction) rSomeVallues;
 		}
 	}
 
@@ -768,7 +775,7 @@ public class Mobi2OWL {
 						Relation.EQUIVALENCE, jenaClass);
 			}
 		}
-
+		
 		this.ImportRelationsComposition(ontology);
 	}
 
@@ -838,7 +845,7 @@ public class Mobi2OWL {
 			this.mobi.addConcept(r);
 		}
 	}
-
+	
 	private void ImportRelationsInheritanceOrEquivalence(
 			int typeRelation, OntClass jenaClass) throws Exception {
 
@@ -867,20 +874,19 @@ public class Mobi2OWL {
 				relation.setClassA(mobiClass);
 				relation.setClassB(mobiSubClass);
 
-				ExtendedIterator<? extends OntResource> individualsClassA = jenaClass
-						.listInstances();
-				ExtendedIterator<? extends OntResource> individualsClassB = jenaSubClass
-						.listInstances();
+				List<? extends OntResource> individualsClassA = jenaClass
+						.listInstances().toList();
+				List<? extends OntResource> individualsClassB = jenaSubClass
+						.listInstances().toList();
 
-				while (individualsClassA.hasNext()) {
-					Individual individualA = individualsClassA.next()
-							.asIndividual();
+				for (OntResource resourceA : individualsClassA) {
+					Individual individualA = resourceA.asIndividual();
+					
 					Instance instanceA = this.mobi.getInstance(individualA
 							.getLocalName());
 
-					while (individualsClassB.hasNext()) {
-						Individual individualB = individualsClassB.next()
-								.asIndividual();
+					for (OntResource resourceB : individualsClassB) {
+						Individual individualB = resourceB.asIndividual();
 						Instance instanceB = this.mobi.getInstance(individualB
 								.getLocalName());
 
@@ -951,18 +957,23 @@ public class Mobi2OWL {
 		//Mobi mobi = TesteMOBIRegiao.carregaDominioRegiao();
 		//Mobi mobi = TesteMOBIEleicao.carregaDominioEleicao();
 		//Mobi mobi = TesteMOBIRegiao.carregaDominioRegiao();
-		System.out.println("Chegou aqui");
-		Mobi mobi = TesteMOBIProfessor.carregaDominioProfessor();
-		Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/", mobi);
-////		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
-////		// TesteMobiCampeonatoBasquete.CarregaDominio());
-////		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
-////		// TesteMOBIRegiao.carregaDominioRegiao());
-////		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
-////		// TesteMOBIAmericaDoSul.carregaDominioAmericaDoSul());
-////
-		mobi2OWL.setExportPath("C:\\BaseOntologia");
-		mobi2OWL.exportMobiToOWL("Professor.owl");
+		TesteMOBIImportacaoAmericaDoSul.LeDominioAmericaDoSul();
+		
+//		TesteMOBIImportacaoPessoa.LeDominioPessoa();
+//		
+//		Mobi mobi = TesteMOBIProfessorAluno.carregaDominioProfessorAluno();
+//		Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/", mobi);
+//////		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
+//////		// TesteMobiCampeonatoBasquete.CarregaDominio());
+//////		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
+//////		// TesteMOBIRegiao.carregaDominioRegiao());
+//////		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
+//////		// TesteMOBIAmericaDoSul.carregaDominioAmericaDoSul());
+//////
+//		mobi2OWL.setExportPath("C:\\BaseOntologia");
+//		mobi2OWL.exportMobiToOWL("teste6.owl");
+////		
+//		System.out.println("TERMINO DA EXPORTACAO");
 		//TesteMOBIImportacaoPessoa.LeDominioPessoa();
 		//TesteMOBIImportacaoAmericaDoSul.LeDominioAmericaDoSul();
 //		Mobi2OWL mobi2 = new Mobi2OWL();

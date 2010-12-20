@@ -21,14 +21,16 @@ public class TesteMOBIPessoa {
 		
 		Class cPessoa  = new Class("cPessoa");
 		Class cPessoaJuridica = new Class("cPessoaJ");
-
+		Class cPessoFisica = new Class("cPessoF");
+		
 		try {
 			mobi.addConcept(iDanisio);
 			mobi.addConcept(iThiago);
 			
 			mobi.addConcept(cPessoa);
 			mobi.addConcept(cPessoaJuridica);
-
+			mobi.addConcept(cPessoFisica);
+			
 			mobi.isOneOf(iDanisio, cPessoa);
 			mobi.isOneOf(iDanisio, cPessoaJuridica);
 			mobi.isOneOf(iThiago, cPessoa);

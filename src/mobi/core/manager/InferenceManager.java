@@ -108,9 +108,7 @@ public class InferenceManager implements Serializable {
 				for(Instance instance: instanceRelation.getAllInstances().values())
 				{
 					if (instance.getUri().equals(instanceRelation.getInstance().getUri()))
-					{
 						return false;
-					}
 				}
 			}else
 				return false;

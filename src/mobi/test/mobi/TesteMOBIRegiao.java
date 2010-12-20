@@ -47,17 +47,17 @@ public class TesteMOBIRegiao {
 			mobi.isOneOf("Nordeste", "Regiao");
 			mobi.isOneOf("Sul", "Regiao");
 
-			Relation r = mobi.createBidirecionalCompositionRelationship("tem", "pertence");
+			Relation rPaisRegiao = mobi.createBidirecionalCompositionRelationship("tem", "pertence");
 
-			r.setClassA(cPais);
-			r.setClassB(cRegiao);
+			rPaisRegiao.setClassA(cPais);
+			rPaisRegiao.setClassB(cRegiao);
 
-			r.addInstanceRelation(iArgentina, iNordeste);
-			r.addInstanceRelation(iBrasil, iNorte);
-			r.addInstanceRelation(iBrasil, iSul);
-			r.addInstanceRelation(iBrasil, iNordeste);
-			r.processCardinality();
-			mobi.addConcept(r);
+			rPaisRegiao.addInstanceRelation(iArgentina, iNordeste);
+			rPaisRegiao.addInstanceRelation(iBrasil, iNorte);
+			rPaisRegiao.addInstanceRelation(iBrasil, iSul);
+			rPaisRegiao.addInstanceRelation(iBrasil, iNordeste);
+			rPaisRegiao.processCardinality();
+			mobi.addConcept(rPaisRegiao);
 			
 			Instance iBahia = new Instance("Bahia");
 			mobi.addConcept(iBahia);

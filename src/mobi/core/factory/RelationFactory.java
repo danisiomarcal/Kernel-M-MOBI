@@ -126,7 +126,6 @@ public class RelationFactory implements Serializable {
 		}
 		
 		return relation;
-		
 	}
 	
 	private Relation copyRelationInfo(Relation from, Relation to){
@@ -143,7 +142,6 @@ public class RelationFactory implements Serializable {
 		to.setValid(from.getValid());
 		
 		return to;
-		
 	}
 
 }

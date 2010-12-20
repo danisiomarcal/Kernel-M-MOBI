@@ -16,55 +16,36 @@ public class TesteMOBIEleicao {
 	public static Mobi carregaDominioEleicao() throws Exception {
 		Mobi mobi = new Mobi("Eleicao");
 
-		Class cCandidato = new Class("Candidato");
-		Class cPrefeito  = new Class("Prefeito");
-		Class cVice      = new Class("Vice-Prefeito");
-		Class cVereador  = new Class("Vereador");
+		Class cPessoa = new Class("cPessoa");
+		Class cMacaco  = new Class("cMacaco");
 		
-		Instance iPrefeito = new Instance("Marcus");
-		Instance iVicePrefeito  = new Instance("Vinicius");
-		Instance iVereador   = new Instance("Oliveira");
-		Instance iCandidato2 = new Instance("Marcus");
-		Instance iCandidato3 = new Instance("iCandidato_3");
+		Instance iThiago = new Instance("iThiago");
+		Instance iMacaco = new Instance("iMacaco");
+		Instance iMacaco2 = new Instance("iMacaco2");
+		Instance iLeticia = new Instance("iLeticia");
 		
 		try {
-			mobi.addConcept(cCandidato);
-			mobi.addConcept(cPrefeito);
-			mobi.addConcept(cVice);
-			mobi.addConcept(cVereador);
+			mobi.addConcept(cPessoa);
+			mobi.addConcept(cMacaco);
 
-			mobi.addConcept(iPrefeito);
-			mobi.addConcept(iVicePrefeito);
-			mobi.addConcept(iVereador);
-			mobi.addConcept(iCandidato2);
-			mobi.addConcept(iCandidato3);
-
-			mobi.isOneOf(iPrefeito,  cPrefeito);
-			mobi.isOneOf(iVicePrefeito,  cVice);
-			mobi.isOneOf(iVereador,  cVereador);
-			mobi.isOneOf(iCandidato2,  cCandidato);
-			mobi.isOneOf(iCandidato3,  cCandidato);
-
-//			Relation rCandaidatoVice = mobi.createInheritanceRelation("CandidatoVice");
-//			rCandaidatoVice.setClassA(cCandidato);
-//			rCandaidatoVice.setClassB(cVice);
-//			rCandaidatoVice.addInstanceRelation(iCandidato2, iVicePrefeito);
-//			rCandaidatoVice.processCardinality();
-//			mobi.addConcept(rCandaidatoVice);
-
-			Relation rCandaidatoPrefeito = mobi.createInheritanceRelation("CandidatoPrefeito");
-			rCandaidatoPrefeito.setClassA(cCandidato);
-			rCandaidatoPrefeito.setClassB(cPrefeito);
-			rCandaidatoPrefeito.addInstanceRelation(iCandidato2, iPrefeito);
-			rCandaidatoPrefeito.processCardinality();
-			mobi.addConcept(rCandaidatoPrefeito);
-//			
-//			Relation rCandaidatoVereador = mobi.createInheritanceRelation("CandidatoVereador");
-//			rCandaidatoVereador.setClassA(cCandidato);
-//			rCandaidatoVereador.setClassB(cVereador);
-//			rCandaidatoVereador.addInstanceRelation(iCandidato2, iVereador);
-//			rCandaidatoVereador.processCardinality();
-//			mobi.addConcept(rCandaidatoVereador);
+			mobi.isOneOf(iThiago,  cPessoa);
+			mobi.isOneOf(iLeticia,  cPessoa);
+			mobi.isOneOf(iMacaco2,  cMacaco);
+			mobi.isOneOf(iMacaco,  cMacaco);
+			
+			Relation rTemFilho = mobi.createUnidirecionalCompositionRelationship("TemFilho");
+			rTemFilho.setClassA(cPessoa);
+			rTemFilho.setClassB(cPessoa);
+			rTemFilho.addInstanceRelation(iThiago, iLeticia);
+			rTemFilho.processCardinality();
+			mobi.addConcept(rTemFilho);
+			
+			Relation rTemFilho2 = mobi.createUnidirecionalCompositionRelationship("TemFilho");
+			rTemFilho2.setClassA(cMacaco);
+			rTemFilho2.setClassB(cMacaco);
+			rTemFilho2.addInstanceRelation(iMacaco, iMacaco2);
+			rTemFilho2.processCardinality();
+			mobi.addConcept(rTemFilho2);
 			
 		} catch (Exception e) {
 			throw e;
