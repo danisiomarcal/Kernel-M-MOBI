@@ -21,6 +21,7 @@ public class TesteMOBIProfessorAluno {
 		Class Pessoa  = new Class("Pessoa");
 		Class Professor = new Class("Professor");
 		Class Aluno = new Class("Aluno");
+		Class cDocente = new Class("Docente");
 		
 		try {
 			mobi.addConcept(Eduardo);
@@ -29,10 +30,12 @@ public class TesteMOBIProfessorAluno {
 			mobi.addConcept(Pessoa);
 			mobi.addConcept(Professor);
 			mobi.addConcept(Aluno);
+			mobi.addConcept(cDocente);
 			
 			mobi.isOneOf(Eduardo, Pessoa);
 			mobi.isOneOf(Eduardo, Professor);
 			mobi.isOneOf(Eduardo, Aluno);
+			mobi.isOneOf(Eduardo, cDocente);
 			
 			mobi.isOneOf(Danisio, Pessoa);
 			mobi.isOneOf(Danisio, Aluno);
@@ -57,6 +60,12 @@ public class TesteMOBIProfessorAluno {
 			r2.processCardinality();
 			mobi.addConcept(r2);
 
+			Relation r3 = mobi.createEquivalenceRelation("equals");
+			r3.setClassA(Professor);
+			r3.setClassB(cDocente);
+			r3.addInstanceRelation(Eduardo, Eduardo);
+			r3.processCardinality();
+			mobi.addConcept(r3);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

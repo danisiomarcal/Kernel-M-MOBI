@@ -20,7 +20,7 @@ public class TesteMOBIImportacaoAmericaDoSul {
 		try
 		{
 			Mobi2OWL mobiOWL = new Mobi2OWL();
-			mobiOWL.importForMobiOfOWL("C:\\BaseOntologia\\AmericaDoSul.owl");
+			mobiOWL.importForMobiOfOWL("C:\\BaseOntologia\\ronaldo@reconcavotecnologia_org_br_comgresso.owl");
 			Mobi mobi = mobiOWL.getMobi();
 			
 			for(Class mobiClass : mobi.getAllClasses().values())

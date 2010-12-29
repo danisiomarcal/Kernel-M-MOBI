@@ -171,6 +171,9 @@ public class ConceptManager implements Serializable {
 			this.ValidateRelationEquivalenceOrInheritance(inheritanceRelation);
 			inheritanceRelation.setContext(this.context);
 			inheritanceRelation.setUri(directNameRelation);
+			
+			//System.out.println("classe a: " + inheritanceRelation.getClassA().getUri());
+			//System.out.println("HERANÇA: " + directNameRelation);
 			this.allInheritanceRelations.put(inheritanceRelation.getUri(),
 					inheritanceRelation);
 		}
@@ -208,6 +211,7 @@ public class ConceptManager implements Serializable {
 				|| r.getType() == Relation.EQUIVALENCE)
 			nameMobiRelation = r.getClassA().getUri() + "_" + r.getUri() + "_"
 					+ r.getClassB().getUri();
+			//System.out.println("Nome a: " + r.getUri());
 		else if (r.getType() == Relation.SYMMETRIC_COMPOSITION)
 			nameMobiRelation = r.getClassA().getUri() + "_"
 					+ ((SymmetricRelation) r).getName() + "_"
@@ -221,6 +225,7 @@ public class ConceptManager implements Serializable {
 					+ ((CompositionRelation) r).getNameA() + "_"
 					+ r.getClassB().getUri();
 
+		//System.out.println("Retorno: " + nameMobiRelation);
 		return nameMobiRelation;
 	}
 
