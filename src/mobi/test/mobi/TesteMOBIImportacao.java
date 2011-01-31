@@ -11,18 +11,17 @@ import mobi.core.relation.InheritanceRelation;
 import mobi.core.relation.InstanceRelation;
 import mobi.extension.export.owl.Mobi2OWL;
 
-public class TesteMOBIImportacaoAmericaDoSul {
+public class TesteMOBIImportacao {
 	public static void main(String[] args) throws IOException,
 	ClassNotFoundException {
-		TesteMOBIImportacaoAmericaDoSul.LeDominioAmericaDoSul();
 	}
 	
-	public static void LeDominioAmericaDoSul() {
+	public static void LeDominio(String path) {
 		
 		try
 		{
 			Mobi2OWL mobiOWL = new Mobi2OWL();
-			mobiOWL.importForMobiOfOWL("C:\\BaseOntologia\\fpbitencourt-congresso.owl");
+			mobiOWL.importForMobiOfOWL(path);
 			Mobi mobi = mobiOWL.getMobi();
 			
 			for(Class mobiClass : mobi.getAllClasses().values())
@@ -71,7 +70,7 @@ public class TesteMOBIImportacaoAmericaDoSul {
 			
 			for(CompositionRelation composition : mobi.getAllCompositionRelations().values())
 			{
-				System.out.println("==================Reading Relation==================");
+				System.out.println("==================Reading Relation Composition==================");
 				System.out.println("NAME A: " + composition.getNameA());
 				System.out.println("NAME B: " + composition.getNameB());
 				System.out.println("DOMAIN: " + composition.getClassA().getUri());

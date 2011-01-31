@@ -3,7 +3,9 @@
 	<!-- set global properties for this build -->
 	<property file="${basedir}/build.properties" />
 	<property name="dist" value="${basedir}/tempJar" />
-
+	<classpath>
+	  <pathelement path="${classpath}"/>
+	</classpath>
 	<!-- Create the dist directory structure used by compiler and copy the deployment descriptors into it -->
 	<target name="init">
 		<echo message="Criando pasta temporaria: ${dist}" />
@@ -18,13 +20,20 @@
 		<copy todir="${dist}/META-INF/">
 			<fileset dir="${basedir}/META-INF" />
 		</copy>
+		
+		<classpath>
+			      <fileset dir="${lib.dir}">
+			        <include name="*.jar"/>
+			      </fileset>
+			    </classpath>
 	</target>
 
 
 	<!-- deploy o jar na pasta de instalacao -->
 	<target name="deploy_jar" description="Gerando o jar na pasta ${dist}" depends="init">
 		<echo message="exportando o JAR" />
-		<jar destfile="${deploy.dir}/${jar.name}${jar.version}.jar">
+		
+		<jar destfile="${deploy.dir}/${jar.name}${jar.version}.jar" >
 			<fileset dir="${dist}" />
 		</jar>
 		<delete dir="${dist}" />

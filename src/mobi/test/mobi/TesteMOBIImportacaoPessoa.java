@@ -22,7 +22,7 @@ public static void LeDominioPessoa() {
 		try
 		{
 			Mobi2OWL mobiOWL = new Mobi2OWL();
-			mobiOWL.importForMobiOfOWL("C:\\BaseOntologia\\teste6.owl");
+			mobiOWL.importForMobiOfOWL("C:\\BaseOntologia\\ExemploJena1.owl");
 			Mobi mobi = mobiOWL.getMobi();
 			
 			for(Class mobiClass : mobi.getAllClasses().values())
