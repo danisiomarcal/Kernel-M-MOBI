@@ -34,14 +34,21 @@ public class TesteMOBIPessoa {
 			mobi.isOneOf(iDanisio, cPessoa);
 			mobi.isOneOf(iDanisio, cPessoaJuridica);
 			mobi.isOneOf(iThiago, cPessoa);
+			mobi.isOneOf(iThiago, cPessoFisica);
 			
 			Relation r = mobi.createInheritanceRelation("inheritance");
 
 			r.setClassA(cPessoa);
 			r.setClassB(cPessoaJuridica);
 			r.addInstanceRelation(iDanisio, iDanisio);
-			r.addInstanceRelation(iThiago, null);
+			r.processCardinality();
+			mobi.addConcept(r);
 			
+			r = mobi.createInheritanceRelation("inheritance");
+
+			r.setClassA(cPessoa);
+			r.setClassB(cPessoFisica);
+			r.addInstanceRelation(iThiago, iThiago);
 			r.processCardinality();
 			mobi.addConcept(r);
 			

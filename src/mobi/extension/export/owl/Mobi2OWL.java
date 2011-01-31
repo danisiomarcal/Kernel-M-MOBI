@@ -778,17 +778,21 @@ public class Mobi2OWL {
 		for (OntClass jenaClass : classes) {
 			if (jenaClass.getURI() != null) {
 				Class mobiClass = new Class(jenaClass.getLocalName());
-				this.mobi.addConcept(mobiClass);
 				List<? extends OntResource> individuals = jenaClass
 						.listInstances().toList();
 
-				for (OntResource resourceIndividual : individuals) {
-					Individual jenaIndividual = resourceIndividual
-							.asIndividual();
-					Instance mobiInstance = new Instance(jenaIndividual
-							.getLocalName());
-					this.mobi.addConcept(mobiInstance);
-					this.mobi.isOneOf(mobiInstance, mobiClass);
+				if (individuals.size() > 0)
+				{
+					this.mobi.addConcept(mobiClass);
+					
+					for (OntResource resourceIndividual : individuals) {
+						Individual jenaIndividual = resourceIndividual
+								.asIndividual();
+						Instance mobiInstance = new Instance(jenaIndividual
+								.getLocalName());
+						this.mobi.addConcept(mobiInstance);
+						this.mobi.isOneOf(mobiInstance, mobiClass);
+					}
 				}
 			}
 		}
@@ -873,7 +877,9 @@ public class Mobi2OWL {
 			for (OntClass jenaSubClass : subClasses) {
 				if (jenaSubClass != null
 						&& !jenaSubClass.getLocalName().equals(
-								mobiClass.getUri())) {
+								mobiClass.getUri()) &&
+								jenaSubClass.listInstances().hasNext()				
+				) {
 
 					Class mobiSubClass = new Class(jenaSubClass.getLocalName());
 					this.mobi.addConcept(mobiSubClass);
@@ -968,8 +974,9 @@ public class Mobi2OWL {
 
 	public static void main(String[] args) throws Exception {
 
-//		 Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
-//		 TesteMOBIAmericaDoSul.carregaDominioAmericaDoSul());
+		 //Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
+		 //TesteMOBIPessoa.carregaDominioPessoa());
+		
 		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
 		// TesteMOBIPessoa.carregaDominioPessoa());
 		// Mobi mobi = TesteMOBIRegiao.carregaDominioRegiao();
@@ -983,9 +990,9 @@ public class Mobi2OWL {
 //		 Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/", mobi);
 //		
 		
-		TesteMOBIImportacao.LeDominio("C:\\BaseOntologia\\America.owl");
-//		 mobi2OWL.setExportPath("C:\\BaseOntologia");
-//		 mobi2OWL.exportMobiToOWL("America.owl");
+		TesteMOBIImportacao.LeDominio("C:\\BaseOntologia\\PessoaHeranca.owl");
+		 //mobi2OWL.setExportPath("C:\\BaseOntologia");
+		 //mobi2OWL.exportMobiToOWL("PessoaHeranca.owl");
 		 //System.out.println("MOBI");
 		// //
 		// System.out.println("TERMINO DA EXPORTACAO");

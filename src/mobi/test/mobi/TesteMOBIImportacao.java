@@ -37,7 +37,7 @@ public class TesteMOBIImportacao {
 			
 			for(InheritanceRelation inheritance : mobi.getAllInheritanceRelations().values())
 			{
-				System.out.println("==================Reading Relation==================");
+				System.out.println("==================Reading Relation Inheritance==================");
 				System.out.println("SUPER CLASS: " + inheritance.getClassA().getUri());
 				System.out.println("SUB CLASS: " + inheritance.getClassB().getUri());
 				System.out.println("NAME: " + inheritance.getUri());
