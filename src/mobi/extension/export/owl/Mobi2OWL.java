@@ -23,6 +23,7 @@ import mobi.exception.ExceptionSymmetricRelation;
 import mobi.test.mobi.TesteMOBIAmericaDoSul;
 import mobi.test.mobi.TesteMOBIEleicao;
 import mobi.test.mobi.TesteMOBIGenericoBidirecional;
+import mobi.test.mobi.TesteMOBIGenericoHeranca;
 import mobi.test.mobi.TesteMOBIImportacao;
 import mobi.test.mobi.TesteMOBIImportacao;
 import mobi.test.mobi.TesteMOBIImportacaoPessoa;
@@ -770,9 +771,8 @@ public class Mobi2OWL {
 		return nameMobiObjectProperty.substring(lengthClassA + 1, lengthClassA
 				+ 1 + quantity);
 	}
-	
-	private void ImportClassesAndInstances() throws Exception
-	{
+
+	private void ImportClassesAndInstances() throws Exception {
 		List<OntClass> classes = this.jena.listClasses().toList();
 
 		for (OntClass jenaClass : classes) {
@@ -781,10 +781,9 @@ public class Mobi2OWL {
 				List<? extends OntResource> individuals = jenaClass
 						.listInstances().toList();
 
-				if (individuals.size() > 0)
-				{
+				if (individuals.size() > 0) {
 					this.mobi.addConcept(mobiClass);
-					
+
 					for (OntResource resourceIndividual : individuals) {
 						Individual jenaIndividual = resourceIndividual
 								.asIndividual();
@@ -803,16 +802,14 @@ public class Mobi2OWL {
 				.toList();
 
 		for (ObjectProperty property : properties) {
-			
+
 			OntClass domain = property.listDomain().next().asClass();
 			if (domain.isUnionClass())
-				domain = domain
-					.asUnionClass().listOperands().toList().get(0);
-			
+				domain = domain.asUnionClass().listOperands().toList().get(0);
+
 			OntClass range = property.listRange().next().asClass();
 			if (range.isUnionClass())
-				range = range
-					.asUnionClass().listOperands().toList().get(0);
+				range = range.asUnionClass().listOperands().toList().get(0);
 
 			Relation r = null;
 
@@ -834,94 +831,106 @@ public class Mobi2OWL {
 						.getInverse().getLocalName(), range.getLocalName()
 						.length(), domain.getLocalName().length()));
 
-			r.setClassA(this.mobi.getClass(domain.getLocalName()));
-			r.setClassB(this.mobi.getClass(range.getLocalName()));
+			Class mobiDomain = this.mobi.getClass(domain.getLocalName());
+			Class mobiRange = this.mobi.getClass(range.getLocalName());
 
-			List<? extends OntResource> individuals = domain.listInstances()
-					.toList();
+			if (mobiDomain != null && mobiRange != null) {
+				r.setClassA(mobiDomain);
+				r.setClassB(mobiRange);
 
-			for (OntResource resourceIndividual : individuals) {
-				Individual individualDomain = resourceIndividual.asIndividual();
+				List<? extends OntResource> individuals = domain
+						.listInstances().toList();
 
-				NodeIterator propertyValues = this.jena.getIndividual(
-						individualDomain.getURI()).listPropertyValues(property);
+				for (OntResource resourceIndividual : individuals) {
+					Individual individualDomain = resourceIndividual
+							.asIndividual();
 
-				while (propertyValues.hasNext()) {
-					RDFNode node = propertyValues.next();
-					Individual individualValue = node.as(Individual.class);
-					r.addInstanceRelation(this.mobi
-							.getInstance(individualDomain.getLocalName()),
-							this.mobi.getInstance(individualValue
-									.getLocalName()));
+					NodeIterator propertyValues = this.jena.getIndividual(
+							individualDomain.getURI()).listPropertyValues(
+							property);
+
+					while (propertyValues.hasNext()) {
+						RDFNode node = propertyValues.next();
+						Individual individualValue = node.as(Individual.class);
+						r.addInstanceRelation(this.mobi
+								.getInstance(individualDomain.getLocalName()),
+								this.mobi.getInstance(individualValue
+										.getLocalName()));
+					}
 				}
-			}
 
-			r.processCardinality();
-			this.mobi.addConcept(r);
+				r.processCardinality();
+				this.mobi.addConcept(r);
+			}
 		}
 	}
-	
-	private void ImportRelationsInheritanceOrEquivalence(int typeRelation) throws Exception {
+
+	private void ImportRelationsInheritanceOrEquivalence(int typeRelation)
+			throws Exception {
 
 		List<OntClass> classes = this.jena.listClasses().toList();
 		for (OntClass jenaClass : classes) {
 			Class mobiClass = this.mobi.getClass(jenaClass.getLocalName());
-			List<OntClass> subClasses = null;
 
-			if (typeRelation == Relation.INHERITANCE)
-				subClasses = this.OntClassInheritanceChain(jenaClass
-						.listSubClasses().toList());
-			else if (typeRelation == Relation.EQUIVALENCE)
-				subClasses = jenaClass.listEquivalentClasses().toList();
+			if (mobiClass != null) {
+				List<OntClass> subClasses = null;
 
-			for (OntClass jenaSubClass : subClasses) {
-				if (jenaSubClass != null
-						&& !jenaSubClass.getLocalName().equals(
-								mobiClass.getUri()) &&
-								jenaSubClass.listInstances().hasNext()				
-				) {
+				if (typeRelation == Relation.INHERITANCE)
+					subClasses = this.OntClassInheritanceChain(jenaClass
+							.listSubClasses().toList());
+				else if (typeRelation == Relation.EQUIVALENCE)
+					subClasses = jenaClass.listEquivalentClasses().toList();
 
-					Class mobiSubClass = new Class(jenaSubClass.getLocalName());
-					this.mobi.addConcept(mobiSubClass);
+				for (OntClass jenaSubClass : subClasses) {
+					if (jenaSubClass != null
+							&& !jenaSubClass.getLocalName().equals(
+									mobiClass.getUri())
+							&& jenaSubClass.listInstances().hasNext()) {
 
-					Relation relation = null;
-					if (typeRelation == Relation.INHERITANCE)
-						relation = this.mobi
-								.createInheritanceRelation("isSuper");
-					else if (typeRelation == Relation.EQUIVALENCE)
-						relation = this.mobi
-								.createEquivalenceRelation("equals");
-
-					relation.setClassA(mobiClass);
-					relation.setClassB(mobiSubClass);
-
-					List<? extends OntResource> individualsClassA = jenaClass
-							.listInstances().toList();
-					List<? extends OntResource> individualsClassB = jenaSubClass
-							.listInstances().toList();
-
-					for (OntResource resourceA : individualsClassA) {
-						Individual individualA = resourceA.asIndividual();
-
-						Instance instanceA = this.mobi.getInstance(individualA
+						Class mobiSubClass = new Class(jenaSubClass
 								.getLocalName());
+						this.mobi.addConcept(mobiSubClass);
 
-						for (OntResource resourceB : individualsClassB) {
-							Individual individualB = resourceB.asIndividual();
-							Instance instanceB = this.mobi
-									.getInstance(individualB.getLocalName());
+						Relation relation = null;
+						if (typeRelation == Relation.INHERITANCE)
+							relation = this.mobi
+									.createInheritanceRelation("isSuper");
+						else if (typeRelation == Relation.EQUIVALENCE)
+							relation = this.mobi
+									.createEquivalenceRelation("equals");
 
-							if (instanceB != null
-									&& instanceA.getUri().equals(
-											instanceB.getUri())) {
-								relation.addInstanceRelation(instanceA,
-										instanceB);
+						relation.setClassA(mobiClass);
+						relation.setClassB(mobiSubClass);
+
+						List<? extends OntResource> individualsClassA = jenaClass
+								.listInstances().toList();
+						List<? extends OntResource> individualsClassB = jenaSubClass
+								.listInstances().toList();
+
+						for (OntResource resourceA : individualsClassA) {
+							Individual individualA = resourceA.asIndividual();
+
+							Instance instanceA = this.mobi
+									.getInstance(individualA.getLocalName());
+
+							for (OntResource resourceB : individualsClassB) {
+								Individual individualB = resourceB
+										.asIndividual();
+								Instance instanceB = this.mobi
+										.getInstance(individualB.getLocalName());
+
+								if (instanceB != null
+										&& instanceA.getUri().equals(
+												instanceB.getUri())) {
+									relation.addInstanceRelation(instanceA,
+											instanceB);
+								}
 							}
 						}
+
+						relation.processCardinality();
+						this.mobi.addConcept(relation);
 					}
-					
-					relation.processCardinality();
-					this.mobi.addConcept(relation);
 				}
 			}
 		}
@@ -974,9 +983,9 @@ public class Mobi2OWL {
 
 	public static void main(String[] args) throws Exception {
 
-		 //Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
-		 //TesteMOBIPessoa.carregaDominioPessoa());
-		
+		Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
+				TesteMOBIAmericaDoSul.carregaDominioAmericaDoSul());
+
 		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/",
 		// TesteMOBIPessoa.carregaDominioPessoa());
 		// Mobi mobi = TesteMOBIRegiao.carregaDominioRegiao();
@@ -984,16 +993,18 @@ public class Mobi2OWL {
 		// Mobi mobi = TesteMOBIRegiao.carregaDominioRegiao();
 		// TesteMOBIImportacaoAmericaDoSul.LeDominioAmericaDoSul();
 
-		//TesteMOBIImportacaoAmericaDoSul.LeDominioAmericaDoSul();
+		// TesteMOBIImportacaoAmericaDoSul.LeDominioAmericaDoSul();
 		//		
-//		 Mobi mobi = TesteMOBIProfessorAluno.carregaDominioProfessorAluno();
-//		 Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/", mobi);
-//		
+		// Mobi mobi = TesteMOBIProfessorAluno.carregaDominioProfessorAluno();
+		// Mobi2OWL mobi2OWL = new Mobi2OWL("http://www.mobi.org/", mobi);
+		//		
+
+		// TesteMOBIImportacao.LeDominio("C:\\BaseOntologia\\PessoaHeranca.owl");
+		mobi2OWL.setExportPath("C:\\BaseOntologia");
+		//mobi2OWL.exportMobiToOWL("Generico3.owl");
 		
-		TesteMOBIImportacao.LeDominio("C:\\BaseOntologia\\PessoaHeranca.owl");
-		 //mobi2OWL.setExportPath("C:\\BaseOntologia");
-		 //mobi2OWL.exportMobiToOWL("PessoaHeranca.owl");
-		 //System.out.println("MOBI");
+		TesteMOBIImportacao.LeDominio("C:\\BaseOntologia\\victor.owl");
+		System.out.println("MOBI");
 		// //
 		// System.out.println("TERMINO DA EXPORTACAO");
 		// TesteMOBIImportacaoPessoa.LeDominioPessoa();

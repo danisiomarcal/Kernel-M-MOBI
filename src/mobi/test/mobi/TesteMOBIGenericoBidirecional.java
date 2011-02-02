@@ -79,9 +79,13 @@ public class TesteMOBIGenericoBidirecional {
 			
 			Collection<Integer> possibilities = mobi.infereRelation(genericRelation);
 			
+			for(Integer i: possibilities)
+				System.out.println(i.toString());
+			
 			if(possibilities.contains(Relation.BIDIRECIONAL_COMPOSITION)) //Preferred choice
 			{
-				CompositionRelation composition = (CompositionRelation)mobi.convertToBidirecionalCompositionRelationship(genericRelation, "tem", "pertence");
+				CompositionRelation composition = 
+					(CompositionRelation)mobi.convertToBidirecionalCompositionRelationship(genericRelation, "tem", "pertence");
 				mobi.addConcept(composition);
 			}
 			
