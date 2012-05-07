@@ -34,7 +34,7 @@ public class InstanceRelation extends Relation {
 	
 	public Boolean removeInstance(Instance instance) {
 		
-		if (!this.instanceMap.containsKey(instance.getUri())) {
+		if (this.instanceMap.containsKey(instance.getUri())) {
 			this.instanceMap.remove(instance.getUri());
 			return true;
 		} else {
