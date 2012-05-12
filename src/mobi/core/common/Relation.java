@@ -2,6 +2,7 @@ package mobi.core.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import mobi.core.cardinality.Cardinality;
 import mobi.core.concept.Class;
@@ -243,8 +244,43 @@ public abstract class Relation extends Concept {
 	public void setType(int type) {
 		this.type = type;
 	}
-
-
+	
+	public void updateInstanceGroupA(String oldId, Instance newInstance){
+		InstanceRelation instanceRelation = this.getInstanceRelationMapA().get(oldId);
+		instanceRelation.setInstance(newInstance);
+		
+		this.getInstanceRelationMapA().remove(oldId);
+		this.getInstanceRelationMapA().put(newInstance.getUri(), instanceRelation);
+		
+		//Atutalizando os realacionamentos do lado B com a instancia nova
+		for(Entry<String, InstanceRelation> instanceRelationB : this.getInstanceRelationMapB().entrySet()){
+			Instance instance = instanceRelationB.getValue().getAllInstances().get(oldId);
+			if(instance != null){
+				instanceRelationB.getValue().getAllInstances().remove(oldId);
+				instanceRelationB.getValue().getAllInstances().put(newInstance.getUri(),newInstance);
+			}
+			
+		}
+	}
+	
+	public void updateInstanceGroupB(String oldId, Instance newInstance){
+		InstanceRelation instanceRelation = this.getInstanceRelationMapB().get(oldId);
+		instanceRelation.setInstance(newInstance);
+		
+		this.getInstanceRelationMapB().remove(oldId);
+		this.getInstanceRelationMapB().put(newInstance.getUri(), instanceRelation);
+		
+		//Atutalizando os realacionamentos do lado B com a instancia nova
+		for(Entry<String, InstanceRelation> instanceRelationA : this.getInstanceRelationMapA().entrySet()){
+			Instance instance = instanceRelationA.getValue().getAllInstances().get(oldId);
+			if(instance != null){
+				instanceRelationA.getValue().getAllInstances().remove(oldId);
+				instanceRelationA.getValue().getAllInstances().put(newInstance.getUri(),newInstance);
+			}
+			
+		}
+	}
+	
 	public String toString() {
 		return super.toString() 
 					+ "ClassA: "+                  this.getCardinalityA().getMobiClass()
