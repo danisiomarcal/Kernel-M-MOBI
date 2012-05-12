@@ -288,6 +288,23 @@ public abstract class Relation extends Concept {
 	public void removeRelationGroupB(Instance instance){
 		this.getInstanceRelationMapB().remove(instance.getUri());
 	}
+	
+	public void removeInstanceRelation(Instance instanceA, Instance instanceB){
+		InstanceRelation instanceRelationA = new InstanceRelation();
+		instanceRelationA.setInstance(instanceA);
+		instanceRelationA =(InstanceRelation)this.getInstanceRelationMapA().get(instanceRelationA.getInstance().getUri());
+		if(instanceRelationA != null){
+			instanceRelationA.removeInstance(instanceB);
+		}
+		
+		InstanceRelation instanceRelationB = new InstanceRelation();
+		instanceRelationB.setInstance(instanceB);
+		instanceRelationB =(InstanceRelation)this.getInstanceRelationMapB().get(instanceRelationB.getInstance().getUri());
+		if(instanceRelationB != null){
+			instanceRelationB.removeInstance(instanceA);
+		}
+		
+	}
 
 
 	public String toString() {
