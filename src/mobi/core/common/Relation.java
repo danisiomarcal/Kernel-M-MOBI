@@ -281,6 +281,15 @@ public abstract class Relation extends Concept {
 		}
 	}
 	
+	public void removeRelationGroupA(Instance instance){
+		this.getInstanceRelationMapA().remove(instance.getUri());
+	}
+	
+	public void removeRelationGroupB(Instance instance){
+		this.getInstanceRelationMapB().remove(instance.getUri());
+	}
+
+
 	public String toString() {
 		return super.toString() 
 					+ "ClassA: "+                  this.getCardinalityA().getMobiClass()
