@@ -305,6 +305,22 @@ public abstract class Relation extends Concept {
 		}
 		
 	}
+	
+	public void addInstanceGroupA(Instance instance){
+		if(! this.getInstanceRelationMapA().containsKey(instance.getUri())){
+			InstanceRelation instanceRelation = new InstanceRelation();
+			instanceRelation.setInstance(instance);
+			this.getInstanceRelationMapA().put(instance.getUri(),instanceRelation);
+		}
+	}
+	
+	public void addInstanceGroupB(Instance instance){
+		if(! this.getInstanceRelationMapB().containsKey(instance.getUri())){
+			InstanceRelation instanceRelation = new InstanceRelation();
+			instanceRelation.setInstance(instance);
+			this.getInstanceRelationMapB().put(instance.getUri(),instanceRelation);
+		}
+	}
 
 
 	public String toString() {
